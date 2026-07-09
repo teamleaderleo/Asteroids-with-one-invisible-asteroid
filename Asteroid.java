@@ -1,6 +1,8 @@
 import processing.core.PShape;
 
 public class Asteroid {
+    private static final float DEFAULT_ROTATION_SPEED = 1;
+
     private PShape ast;
     private MainDraw p;
     private float x;
@@ -15,7 +17,7 @@ public class Asteroid {
         x = xpos;
         y = ypos;
         speed = spd;
-        rotationSpeed = rotatSpd;
+        rotationSpeed = safeRotation(rotatSpd);
         angle = ang;
         scale = scl;
         if (Math.random() > 0.49) {
@@ -30,6 +32,7 @@ public class Asteroid {
 
     public void draw() {
         teleBack();
+        rotationSpeed = safeRotation(rotationSpeed);
         p.pushMatrix(); //store current plac e
         p.translate(x, y);
         p.rotate(rotationSpeed);
@@ -95,6 +98,13 @@ public class Asteroid {
         return (int) (Math.random() * size + start);
     }
 
+    private static float safeRotation(float value) {
+        if (value == 0 || Float.isNaN(value) || Float.isInfinite(value)) {
+            return DEFAULT_ROTATION_SPEED;
+        }
+        return value;
+    }
+
     public float getX() {
         return x;
     }
@@ -105,7 +115,7 @@ public class Asteroid {
 
     public float getRotation() {
 //		return (float)Math.toRadians(rotationSpeed);
-        return angle;
+        return rotationSpeed;
     }
 
     public PShape getShape() {
